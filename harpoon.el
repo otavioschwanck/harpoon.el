@@ -6,7 +6,7 @@
 ;; Keywords: tools languages
 ;; Homepage: https://github.com/otavioschwanck/rails-routes
 ;; Version: 0.3
-;; Package-Requires: ((emacs "27.2") (projectile "2.5.0") (magit "3.3.0"))
+;; Package-Requires: ((emacs "27.2") (projectile "2.5.0") (magit "3.3.0") (f "0.20.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
