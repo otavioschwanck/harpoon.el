@@ -1,5 +1,5 @@
 * About
-Harpoon plugin for emacs, based on [[https://github.com/ThePrimeagen/harpoon][ThePrimeagen]] for vim.
+Harpoon plugin for emacs, based on the plugin from [[https://github.com/ThePrimeagen/harpoon][ThePrimeagen]].
 
 This plugin offers quick bookmarks separated by project and branch.  You can quick navigate between your working files and forget about that files opened that you will not use anymore.
 
