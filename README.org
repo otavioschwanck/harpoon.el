@@ -1,0 +1,73 @@
+* About
+Harpoon plugin for emacs, based on [[https://github.com/ThePrimeagen/harpoon][ThePrimeagen]] for vim.
+
+This plugin offers quick bookmarks separated by project and branch.  You can quick navigate between your working files and forget about that files opened that you will not use anymore.
+
+Harpoon persists between emacs sessions.
+
+[[file:demo.gif]]
+
+* Installation
+** Manual
+Load =harpoon.el= in your personal configuration.
+
+** MELPA
+Coming soon.
+
+* Features
+- Add, order and delete harpoons in your code.
+- Harpoon is separated by project and branch
+- Quick switch between harpoons
+
+* Configuring
+Example of how to set the shortcuts:
+
+#+begin_src emacs-lisp
+;; On vanilla (You can use another prefix instead C-c h)
+(global-set-key (kbd "C-c h f") 'harpoon-toggle-file)
+(global-set-key (kbd "C-c h <return>") 'harpoon-add-file)
+(global-set-key (kbd "C-c h h") 'harpoon-toggle-quick-menu)
+(global-set-key (kbd "C-c h c") 'harpoon-clear)
+(global-set-key (kbd "C-c h 1") 'harpoon-go-to-1)
+(global-set-key (kbd "C-c h 2") 'harpoon-go-to-2)
+(global-set-key (kbd "C-c h 3") 'harpoon-go-to-3)
+(global-set-key (kbd "C-c h 4") 'harpoon-go-to-4)
+(global-set-key (kbd "C-c h 5") 'harpoon-go-to-5)
+(global-set-key (kbd "C-c h 6") 'harpoon-go-to-6)
+(global-set-key (kbd "C-c h 7") 'harpoon-go-to-7)
+(global-set-key (kbd "C-c h 8") 'harpoon-go-to-8)
+(global-set-key (kbd "C-c h 9") 'harpoon-go-to-9)
+
+;; On doom emacs
+(load "path/to/harpoon.el")
+(require 'harpoon)
+
+(map! :n "<tab> f" 'harpoon-toggle-file)
+(map! :n "<tab> <return>" 'harpoon-add-file)
+(map! :n "<tab> <tab>" 'harpoon-toggle-quick-menu)
+(map! :n "<tab> c" 'harpoon-clear)
+(map! :n "<tab> 1" 'harpoon-go-to-1)
+(map! :n "<tab> 2" 'harpoon-go-to-2)
+(map! :n "<tab> 3" 'harpoon-go-to-3)
+(map! :n "<tab> 4" 'harpoon-go-to-4)
+(map! :n "<tab> 5" 'harpoon-go-to-5)
+(map! :n "<tab> 6" 'harpoon-go-to-6)
+(map! :n "<tab> 7" 'harpoon-go-to-7)
+(map! :n "<tab> 8" 'harpoon-go-to-8)
+(map! :n "<tab> 9" 'harpoon-go-to-9)
+#+end_src
+
+* My other works:
+** Rails i18n:
+https://github.com/otavioschwanck/rails-i18n.el
+
+** Rails routes:
+https://github.com/otavioschwanck/rails-routes.el
+
+** My Personal Config (for rails)
+(Very complete, has videos + handbooks of how to use)
+https://github.com/otavioschwanck/doom-emacs-on-rails/
+
+
+* Do you like my work?  Please, buy me a coffee
+https://www.buymeacoffee.com/otavioschwanck
