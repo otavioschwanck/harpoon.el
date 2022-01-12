@@ -183,9 +183,8 @@
   (f-write "" 'utf-8 (harpoon--file-name)))
 
 (defun harpoon-find-file ()
-  "Visit file on harpoon-mode."
+  "Visit file on `harpoon-mode'."
   (interactive)
-  "Find file on harpoon mode"
   (let* ((line (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
          (path (concat harpoon--project-path line)))
     (when (file-exists-p path)
