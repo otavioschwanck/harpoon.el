@@ -169,7 +169,7 @@
   (let ((result (completing-read "Harpoon to file: "
                                  (delete (s-replace-regexp (projectile-project-p) "" (or (buffer-file-name) ""))
                                          (delete "" (split-string (harpoon--get-file-text) "\n"))))))
-    (when result
+    (when (and result (file-exists-p result) (not (string-equal result "")))
       (find-file (concat (projectile-project-p) result)))))
 
 (define-derived-mode harpoon-mode nil "Harpoon"
