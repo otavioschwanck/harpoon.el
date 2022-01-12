@@ -40,6 +40,10 @@
   "Where the cache will be saved."
   :type 'string)
 
+(defcustom harpoon-separate-by-branch t
+  "Harpoon separated by branch."
+  :type 'string)
+
 (defvar harpoon-cache '()
   "Cache for harpoon.")
 
@@ -57,15 +61,16 @@
 
 (defun harpoon--cache-key ()
   "Key to save current file on cache."
-  (concat (harpoon--sanitize (projectile-project-name))
-          "#"
-          (harpoon--sanitize (magit-get-current-branch))))
+  (if harpoon-separate-by-branch
+      (concat (harpoon--sanitize (projectile-project-name))
+              "#"
+              (harpoon--sanitize (magit-get-current-branch)))
+    (harpoon--sanitize (projectile-project-name))))
 
 (defun harpoon--create-directory ()
   "Create harpoon cache dir if dont exists."
   (unless (f-directory? harpoon-cache-file)
     (shell-command (concat "mkdir " harpoon-cache-file))))
-
 
 
 (defun harpoon--file-name ()

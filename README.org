@@ -57,6 +57,12 @@ Example of how to set the shortcuts:
 (map! :leader "9" 'harpoon-go-to-9)
 #+end_src
 
+* Customizing
+You can customize by setting this variable:
+
+| Variable                   | Description                | Default |
+| harpoon-separate-by-branch | If nil, ignores the branch | t       |
+
 * My other works:
 ** Rails i18n:
 https://github.com/otavioschwanck/rails-i18n.el
