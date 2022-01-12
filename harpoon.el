@@ -146,7 +146,9 @@
          (harpoon--get-file-text)))
     (if (string-match-p (harpoon--buffer-file-name) harpoon-current-file-text)
         (message "This file is already on harpoon!")
-      (f-write-text (concat harpoon-current-file-text (harpoon--buffer-file-name) "\n") 'utf-8 (harpoon--file-name)))))
+      (progn
+        (f-write-text (concat harpoon-current-file-text (harpoon--buffer-file-name) "\n") 'utf-8 (harpoon--file-name))
+        (message "File added to harpoon!")))))
 
 (defun harpoon--get-file-text ()
   "Get text inside harpoon file."
