@@ -38,23 +38,23 @@ Example of how to set the shortcuts:
 (global-set-key (kbd "C-c h 8") 'harpoon-go-to-8)
 (global-set-key (kbd "C-c h 9") 'harpoon-go-to-9)
 
-;; On doom emacs
+;; On doom emacs / Evil
 (load "path/to/harpoon.el")
 (require 'harpoon)
 
-(map! :n "<tab> f" 'harpoon-toggle-file)
-(map! :n "<tab> <return>" 'harpoon-add-file)
-(map! :n "<tab> <tab>" 'harpoon-toggle-quick-menu)
-(map! :n "<tab> c" 'harpoon-clear)
-(map! :n "<tab> 1" 'harpoon-go-to-1)
-(map! :n "<tab> 2" 'harpoon-go-to-2)
-(map! :n "<tab> 3" 'harpoon-go-to-3)
-(map! :n "<tab> 4" 'harpoon-go-to-4)
-(map! :n "<tab> 5" 'harpoon-go-to-5)
-(map! :n "<tab> 6" 'harpoon-go-to-6)
-(map! :n "<tab> 7" 'harpoon-go-to-7)
-(map! :n "<tab> 8" 'harpoon-go-to-8)
-(map! :n "<tab> 9" 'harpoon-go-to-9)
+(map! :leader "j c" 'harpoon-clear)
+(map! :leader "j f" 'harpoon-toggle-file)
+(map! :n "C-s" 'harpoon-add-file)
+(map! :n "C-SPC" 'harpoon-toggle-quick-menu)
+(map! :leader "1" 'harpoon-go-to-1)
+(map! :leader "2" 'harpoon-go-to-2)
+(map! :leader "3" 'harpoon-go-to-3)
+(map! :leader "4" 'harpoon-go-to-4)
+(map! :leader "5" 'harpoon-go-to-5)
+(map! :leader "6" 'harpoon-go-to-6)
+(map! :leader "7" 'harpoon-go-to-7)
+(map! :leader "8" 'harpoon-go-to-8)
+(map! :leader "9" 'harpoon-go-to-9)
 #+end_src
 
 * My other works:
