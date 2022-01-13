@@ -4,7 +4,7 @@
 
 ;; Author: Otávio Schwanck <otavioschwanck@gmail.com>
 ;; Keywords: tools languages
-;; Homepage: https://github.com/otavioschwanck/rails-routes
+;; Homepage: https://github.com/otavioschwanck/harpoon.el
 ;; Version: 0.3
 ;; Package-Requires: ((emacs "27.2") (projectile "2.5.0") (magit "3.3.0") (f "0.20.0"))
 
