@@ -194,10 +194,11 @@
   (interactive)
   (let* ((line (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
          (path (concat harpoon--project-path line)))
-    (when (file-exists-p path)
-      (save-buffer)
+    (if (file-exists-p path)
+      (progn (save-buffer)
       (kill-buffer)
-      (find-file path))))
+      (find-file path))
+      (message "File not found."))))
 
 (define-key harpoon-mode-map (kbd "<return>") #'harpoon-find-file)
 
