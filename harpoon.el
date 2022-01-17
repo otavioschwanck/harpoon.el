@@ -1,4 +1,4 @@
-;;; harpoon.el --- Bookmarks with steroids    -*- lexical-binding: t; -*-
+;;; harpoon.el --- Bookmarks on steroids    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2022  Otávio Schwanck
 
@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; This is a plugin base on harpoon from vim (by ThePrimeagen).  Is like a bookmark manager with steroids.
+;; This is a plugin base on harpoon from vim (by ThePrimeagen).  Is like a bookmark manager on steroids.
 ;; You can easily add, reorder and delete bookmarks.  Hhe bookmarks are separated by project and branch.
 
 ;;; Code:
@@ -42,22 +42,19 @@
 
 (defcustom harpoon-separate-by-branch t
   "Harpoon separated by branch."
-  :type 'string)
+  :type 'boolean)
 
 (defvar harpoon-cache '()
   "Cache for harpoon.")
 
-(defcustom harpoon--current-project-path nil
-  "Current project name on harpoon.  Its only transactional."
-  :type 'string)
+(defvar harpoon--current-project-path nil
+  "Current project path on harpoon.  Its only transactional.")
 
-(defcustom harpoon--project-path nil
-  "Current project name on harpoon.  Its only transactional."
-  :type 'string)
+(defvar harpoon--project-path nil
+  "Current project name on harpoon.  Its only transactional.")
 
-(defcustom harpoon-cache-loaded nil
-  "Cache for harpoon."
-  :type 'boolean)
+(defvar harpoon-cache-loaded nil
+  "Cache for harpoon.")
 
 (defun harpoon--cache-key ()
   "Key to save current file on cache."
@@ -200,7 +197,9 @@
       (find-file path))
       (message "File not found."))))
 
-(define-key harpoon-mode-map (kbd "<return>") #'harpoon-find-file)
+(defvar harpoon-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "<return>") #'harpoon-find-file)))
 
 (provide 'harpoon)
 ;;; harpoon.el ends here
