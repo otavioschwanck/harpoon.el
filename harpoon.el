@@ -30,7 +30,6 @@
 (require 'projectile)
 (require 'magit)
 (require 'f)
-(require 'magit)
 
 (defgroup harpoon nil
   "Harpoon for emacs."
