@@ -197,9 +197,7 @@
       (find-file path))
       (message "File not found."))))
 
-(defvar harpoon-mode-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "<return>") #'harpoon-find-file)))
+(define-key harpoon-mode-map (kbd "<return>") #'harpoon-find-file)
 
 (provide 'harpoon)
 ;;; harpoon.el ends here
