@@ -31,6 +31,10 @@
 (require 'magit)
 (require 'f)
 
+(defvar harpoon-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "<return>") #'harpoon-find-file) map))
+
 (defgroup harpoon nil
   "Harpoon for emacs."
   :group 'tools)
@@ -195,8 +199,6 @@
       (kill-buffer)
       (find-file path))
       (message "File not found."))))
-
-(define-key harpoon-mode-map (kbd "<return>") #'harpoon-find-file)
 
 (provide 'harpoon)
 ;;; harpoon.el ends here
