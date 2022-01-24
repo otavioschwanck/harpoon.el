@@ -23,8 +23,10 @@
 
 ;;; Commentary:
 
-;; This is a plugin base on harpoon from vim (by ThePrimeagen).  Is like a bookmark manager on steroids.
-;; You can easily add, reorder and delete bookmarks.  Hhe bookmarks are separated by project and branch.
+;; This is a plugin base on harpoon from vim (by ThePrimeagen).  Is like a
+;; bookmark manager on steroids.
+;; You can easily add, reorder and delete bookmarks.  The bookmarks are
+;; separated by project and branch.
 
 ;;; Code:
 (require 'projectile)
@@ -36,7 +38,7 @@
     (define-key map (kbd "<return>") #'harpoon-find-file) map))
 
 (defgroup harpoon nil
-  "Harpoon for emacs."
+  "Organize bookmarks by project and branch."
   :group 'tools)
 
 (defcustom harpoon-cache-file (concat user-emacs-directory ".local/harpoon/")
@@ -68,9 +70,9 @@
     (harpoon--sanitize (projectile-project-name))))
 
 (defun harpoon--create-directory ()
-  "Create harpoon cache dir if dont exists."
+  "Create harpoon cache dir if doesn't exist."
   (unless (f-directory? harpoon-cache-file)
-    (shell-command (concat "mkdir " harpoon-cache-file))))
+    (make-directory harpoon-cache-file)))
 
 
 (defun harpoon--file-name ()
@@ -96,7 +98,7 @@
     (message full-file-name)
     (if (file-exists-p full-file-name)
         (find-file full-file-name)
-      (message "File not found. =("))))
+      (message "File not found."))))
 
 (defun harpoon-go-to-1 ()
   "Go to file 1 on harpoon."
@@ -150,10 +152,10 @@
   (let ((harpoon-current-file-text
          (harpoon--get-file-text)))
     (if (string-match-p (harpoon--buffer-file-name) harpoon-current-file-text)
-        (message "This file is already on harpoon!")
+        (message "This file is already on harpoon.")
       (progn
         (f-write-text (concat harpoon-current-file-text (harpoon--buffer-file-name) "\n") 'utf-8 (harpoon--file-name))
-        (message "File added to harpoon!")))))
+        (message "File added to harpoon.")))))
 
 (defun harpoon--get-file-text ()
   "Get text inside harpoon file."
