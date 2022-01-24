@@ -12,7 +12,14 @@ Harpoon persists between emacs sessions.
 Load =harpoon.el= in your personal configuration.
 
 ** MELPA
-Coming soon.
+M-x package-install harpoon
+
+** Doom Emacs
+Add to package.el:
+
+#+begin_src emacs-lisp
+(package! harpoon)
+#+end_src
 
 * Features
 - Add, order and delete harpoons in your code.
