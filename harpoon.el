@@ -100,51 +100,61 @@
         (find-file full-file-name)
       (message "File not found."))))
 
+;;;###autoload
 (defun harpoon-go-to-1 ()
   "Go to file 1 on harpoon."
   (interactive)
   (harpoon--go-to 1))
 
+;;;###autoload
 (defun harpoon-go-to-2 ()
   "Go to file 2 on harpoon."
   (interactive)
   (harpoon--go-to 2))
 
+;;;###autoload
 (defun harpoon-go-to-3 ()
   "Go to file 3 on harpoon."
   (interactive)
   (harpoon--go-to 3))
 
+;;;###autoload
 (defun harpoon-go-to-4 ()
   "Go to file 4 on harpoon."
   (interactive)
   (harpoon--go-to 4))
 
+;;;###autoload
 (defun harpoon-go-to-5 ()
   "Go to file 5 on harpoon."
   (interactive)
   (harpoon--go-to 5))
 
+;;;###autoload
 (defun harpoon-go-to-6 ()
   "Go to file 6 on harpoon."
   (interactive)
   (harpoon--go-to 6))
 
+;;;###autoload
 (defun harpoon-go-to-7 ()
   "Go to file 7 on harpoon."
   (interactive)
   (harpoon--go-to 7))
 
+;;;###autoload
 (defun harpoon-go-to-8 ()
   "Go to file 8 on harpoon."
   (interactive)
   (harpoon--go-to 8))
 
+;;;###autoload
 (defun harpoon-go-to-9 ()
   "Go to file 9 on harpoon."
   (interactive)
   (harpoon--go-to 9))
 
+;;;###autoload
 (defun harpoon-add-file ()
   "Add current file to harpoon."
   (interactive)
@@ -170,6 +180,7 @@
   (find-file (harpoon--file-name) '(:dedicated t))
   (harpoon-mode))
 
+;;;###autoload
 (defun harpoon-toggle-quick-menu ()
   "Open quickmenu."
   (interactive)
@@ -186,11 +197,13 @@
   (setq harpoon--current-project-path nil)
   (display-line-numbers-mode t))
 
+;;;###autoload
 (defun harpoon-clear ()
   "Clear harpoon files."
   (interactive)
   (f-write "" 'utf-8 (harpoon--file-name)))
 
+;;;###autoload
 (defun harpoon-find-file ()
   "Visit file on `harpoon-mode'."
   (interactive)
