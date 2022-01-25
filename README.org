@@ -45,10 +45,7 @@ Example of how to set the shortcuts:
 (global-set-key (kbd "C-c h 8") 'harpoon-go-to-8)
 (global-set-key (kbd "C-c h 9") 'harpoon-go-to-9)
 
-;; On doom emacs / Evil
-(load "path/to/harpoon.el")
-(require 'harpoon)
-
+;; On doom emacs
 (map! :leader "j c" 'harpoon-clear)
 (map! :leader "j f" 'harpoon-toggle-file)
 (map! :n "C-s" 'harpoon-add-file)
