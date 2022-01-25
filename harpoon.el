@@ -6,7 +6,7 @@
 ;; Keywords: tools languages
 ;; Homepage: https://github.com/otavioschwanck/harpoon.el
 ;; Version: 0.3
-;; Package-Requires: ((emacs "27.2") (projectile "2.5.0") (magit "3.3.0") (f "0.20.0"))
+;; Package-Requires: ((emacs "27.2") (magit "3.3.0") (f "0.20.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@
 ;; separated by project and branch.
 
 ;;; Code:
-(require 'projectile)
 (require 'magit)
 (require 'f)
 
@@ -44,6 +43,10 @@
 (defcustom harpoon-cache-file (concat user-emacs-directory ".local/harpoon/")
   "Where the cache will be saved."
   :type 'string)
+
+(defcustom harpoon-project-name-function 'projectile-project-name
+  "Function used to get project name."
+  :type 'symbol)
 
 (defcustom harpoon-separate-by-branch t
   "Harpoon separated by branch."
@@ -64,10 +67,10 @@
 (defun harpoon--cache-key ()
   "Key to save current file on cache."
   (if harpoon-separate-by-branch
-      (concat (harpoon--sanitize (projectile-project-name))
+      (concat (harpoon--sanitize (funcall harpoon-project-name-function))
               "#"
               (harpoon--sanitize (magit-get-current-branch)))
-    (harpoon--sanitize (projectile-project-name))))
+    (harpoon--sanitize (funcall harpoon-project-name-function))))
 
 (defun harpoon--create-directory ()
   "Create harpoon cache dir if doesn't exist."

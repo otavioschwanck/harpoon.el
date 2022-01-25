@@ -67,8 +67,12 @@ Example of how to set the shortcuts:
 * Customizing
 You can customize by setting this variable:
 
-| Variable                   | Description                | Default |
-| harpoon-separate-by-branch | If nil, ignores the branch | t       |
+| Variable                      | Description                  | Default                  |
+| harpoon-separate-by-branch    | If nil, ignores the branch   | t                        |
+| harpoon-project-name-function | Function to get project name | 'projectile-project-name |
+
+* For project.el users
+
 
 * My other works:
 ** Rails i18n:
