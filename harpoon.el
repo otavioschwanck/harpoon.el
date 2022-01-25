@@ -6,7 +6,7 @@
 ;; Keywords: tools languages
 ;; Homepage: https://github.com/otavioschwanck/harpoon.el
 ;; Version: 0.3
-;; Package-Requires: ((emacs "27.2") (magit "3.3.0") (f "0.20.0"))
+;; Package-Requires: ((emacs "27.2") (f "0.20.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@
 ;; separated by project and branch.
 
 ;;; Code:
-(require 'magit)
 (require 'f)
 
 (defvar harpoon-mode-map
@@ -48,6 +47,10 @@
   "Function used to get project name."
   :type 'symbol)
 
+(defcustom harpoon-project-root-function 'projectile-project-root
+  "Function used to get project root."
+  :type 'symbol)
+
 (defcustom harpoon-separate-by-branch t
   "Harpoon separated by branch."
   :type 'boolean)
@@ -64,12 +67,18 @@
 (defvar harpoon-cache-loaded nil
   "Cache for harpoon.")
 
+(defun harpoon--get-branch-name ()
+  "Get the branch name for harpoon."
+  (car (split-string
+        (shell-command-to-string
+         (concat "cd " (funcall harpoon-project-root-function) "; git rev-parse --abbrev-ref HEAD")) "\n")))
+
 (defun harpoon--cache-key ()
   "Key to save current file on cache."
   (if harpoon-separate-by-branch
       (concat (harpoon--sanitize (funcall harpoon-project-name-function))
               "#"
-              (harpoon--sanitize (magit-get-current-branch)))
+              (harpoon--sanitize (harpoon--get-branch-name)))
     (harpoon--sanitize (funcall harpoon-project-name-function))))
 
 (defun harpoon--create-directory ()

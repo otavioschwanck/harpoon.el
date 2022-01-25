@@ -70,6 +70,7 @@ You can customize by setting this variable:
 | Variable                      | Description                  | Default                  |
 | harpoon-separate-by-branch    | If nil, ignores the branch   | t                        |
 | harpoon-project-name-function | Function to get project name | 'projectile-project-name |
+| harpoon-project-root-function | Function to get project root | 'projectile-project-root |
 
 * For project.el users
 
