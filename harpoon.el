@@ -206,6 +206,7 @@
   (if (file-exists-p (harpoon--file-name))
       (f-read (harpoon--file-name) 'utf-8) ""))
 
+;;;###autoload
 (defun harpoon-toggle-file ()
   "Open harpoon file."
   (interactive)
