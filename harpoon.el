@@ -31,6 +31,10 @@
 ;;; Code:
 (require 'f)
 
+(defun harpoon--default-project-package ()
+  "Return the default project package."
+  (if (featurep 'projectile) 'projectile 'project))
+
 (defvar harpoon-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "<return>") #'harpoon-find-file) map))
@@ -43,12 +47,8 @@
   "Where the cache will be saved."
   :type 'string)
 
-(defcustom harpoon-project-name-function 'projectile-project-name
-  "Function used to get project name."
-  :type 'symbol)
-
-(defcustom harpoon-project-root-function 'projectile-project-root
-  "Function used to get project root."
+(defcustom harpoon-project-package (harpoon--default-project-package)
+  "Project package to access project functions."
   :type 'symbol)
 
 (defcustom harpoon-separate-by-branch t
@@ -67,19 +67,41 @@
 (defvar harpoon-cache-loaded nil
   "Cache for harpoon.")
 
+(defun harpoon-project-root-function ()
+  "Get the project root."
+  (cond
+   ((eq harpoon-project-package 'projectile) (when (fboundp 'projectile-project-root) (projectile-project-root)))
+   ((eq harpoon-project-package 'project) (string-replace "~/"
+                                                          (concat (car (split-string
+                                                                (shell-command-to-string "echo $HOME") "\n")) "/")
+                                                          (when (fboundp 'project-root) (project-root (project-current)))))))
+
+(defun harpoon-project-name-function ()
+  "Get the project name."
+  (cond
+   ((eq harpoon-project-package 'projectile) (when (fboundp 'projectile-project-name) (projectile-project-name)))
+   ((eq harpoon-project-package 'project) (harpoon--get-project-name-for-project))))
+
+(defun harpoon--get-project-name-for-project ()
+  "Return projects name for project."
+  (let* ((splitted-project-path (split-string (cdr (project-current)) "/"))
+         (splitted-length (length splitted-project-path))
+         (project-name (nth (- splitted-length 2) splitted-project-path)))
+    project-name))
+
 (defun harpoon--get-branch-name ()
   "Get the branch name for harpoon."
   (car (split-string
         (shell-command-to-string
-         (concat "cd " (funcall harpoon-project-root-function) "; git rev-parse --abbrev-ref HEAD")) "\n")))
+         (concat "cd " (harpoon-project-root-function) "; git rev-parse --abbrev-ref HEAD")) "\n")))
 
 (defun harpoon--cache-key ()
   "Key to save current file on cache."
   (if harpoon-separate-by-branch
-      (concat (harpoon--sanitize (funcall harpoon-project-name-function))
+      (concat (harpoon--sanitize (harpoon-project-name-function))
               "#"
               (harpoon--sanitize (harpoon--get-branch-name)))
-    (harpoon--sanitize (funcall harpoon-project-name-function))))
+    (harpoon--sanitize (harpoon-project-name-function))))
 
 (defun harpoon--create-directory ()
   "Create harpoon cache dir if doesn't exist."
@@ -93,7 +115,7 @@
 
 (defun harpoon--buffer-file-name ()
   "Parse harpoon file name."
-  (s-replace-regexp (projectile-project-p) "" (buffer-file-name)))
+  (s-replace-regexp (harpoon-project-root-function) "" (buffer-file-name)))
 
 (defun harpoon--sanitize (string)
   "Sanitize word to save file.  STRING: String to sanitize."
@@ -102,11 +124,11 @@
 (defun harpoon--go-to (line-number)
   "Go to specific file on harpoon (by line order). LINE-NUMBER: Line to go."
   (let* ((file-name (s-replace-regexp "\n" ""
-                                (shell-command-to-string
-                                 (format "head -n %s < %s | tail -n 1"
-                                         line-number
-                                         (harpoon--file-name)))))
-        (full-file-name (concat (projectile-project-p) file-name)))
+                                      (shell-command-to-string
+                                       (format "head -n %s < %s | tail -n 1"
+                                               line-number
+                                               (harpoon--file-name)))))
+         (full-file-name (concat (harpoon-project-root-function) file-name)))
     (message full-file-name)
     (if (file-exists-p full-file-name)
         (find-file full-file-name)
@@ -188,7 +210,7 @@
   "Open harpoon file."
   (interactive)
   (harpoon--create-directory)
-  (setq harpoon--current-project-path (projectile-project-p))
+  (setq harpoon--current-project-path (harpoon-project-root-function))
   (find-file (harpoon--file-name) '(:dedicated t))
   (harpoon-mode))
 
@@ -197,10 +219,10 @@
   "Open quickmenu."
   (interactive)
   (let ((result (completing-read "Harpoon to file: "
-                                 (delete (s-replace-regexp (projectile-project-p) "" (or (buffer-file-name) ""))
+                                 (delete (s-replace-regexp (harpoon-project-root-function) "" (or (buffer-file-name) ""))
                                          (delete "" (split-string (harpoon--get-file-text) "\n"))))))
     (when (and result (not (string-equal result "")))
-      (find-file (concat (projectile-project-p) result)))))
+      (find-file (concat (harpoon-project-root-function) result)))))
 
 (define-derived-mode harpoon-mode nil "Harpoon"
   "Mode for harpoon."
@@ -222,9 +244,9 @@
   (let* ((line (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
          (path (concat harpoon--project-path line)))
     (if (file-exists-p path)
-      (progn (save-buffer)
-      (kill-buffer)
-      (find-file path))
+        (progn (save-buffer)
+               (kill-buffer)
+               (find-file path))
       (message "File not found."))))
 
 (provide 'harpoon)
