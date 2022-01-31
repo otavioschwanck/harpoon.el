@@ -73,7 +73,7 @@
    ((eq harpoon-project-package 'projectile) (when (fboundp 'projectile-project-root) (projectile-project-root)))
    ((eq harpoon-project-package 'project) (string-replace "~/"
                                                           (concat (car (split-string
-                                                                (shell-command-to-string "echo $HOME") "\n")) "/")
+                                                                        (shell-command-to-string "echo $HOME") "\n")) "/")
                                                           (when (fboundp 'project-root) (project-root (project-current)))))))
 
 (defun harpoon-project-name-function ()
@@ -127,8 +127,8 @@
                                       (shell-command-to-string
                                        (format "head -n %s < %s | tail -n 1"
                                                line-number
-                                               (harpoon--file-name)))))
-         (full-file-name (concat (harpoon-project-root-function) file-name)))
+                                               (if (eq major-mode 'harpoon-mode) (file-truename (buffer-file-name)) (harpoon--file-name))))))
+         (full-file-name (concat (or harpoon--project-path (harpoon-project-root-function)) file-name)))
     (message full-file-name)
     (if (file-exists-p full-file-name)
         (find-file full-file-name)
@@ -210,10 +210,11 @@
 (defun harpoon-toggle-file ()
   "Open harpoon file."
   (interactive)
-  (harpoon--create-directory)
-  (setq harpoon--current-project-path (harpoon-project-root-function))
-  (find-file (harpoon--file-name) '(:dedicated t))
-  (harpoon-mode))
+  (unless (eq major-mode 'harpoon-mode)
+    (harpoon--create-directory)
+    (setq harpoon--current-project-path (harpoon-project-root-function))
+    (find-file (harpoon--file-name) '(:dedicated t))
+    (harpoon-mode)))
 
 ;;;###autoload
 (defun harpoon-toggle-quick-menu ()
@@ -236,7 +237,11 @@
 (defun harpoon-clear ()
   "Clear harpoon files."
   (interactive)
-  (f-write "" 'utf-8 (harpoon--file-name)))
+  (if (eq major-mode 'harpoon-mode)
+      (progn (f-write "" 'utf-8 (file-truename (buffer-file-name)))
+             (kill-buffer))
+      (f-write "" 'utf-8 (harpoon--file-name)))
+  (message "Harpoon cleaned."))
 
 ;;;###autoload
 (defun harpoon-find-file ()
