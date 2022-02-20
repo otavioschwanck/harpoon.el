@@ -43,7 +43,7 @@
   "Organize bookmarks by project and branch."
   :group 'tools)
 
-(defcustom harpoon-without-project-function 'harpoon--current-file-directory
+(defcustom harpoon-without-project-function 'harpoon--package-name
   "When project is not found, use this function instead."
   :type 'string)
 
