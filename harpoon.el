@@ -87,7 +87,7 @@
 (defun harpoon--has-project ()
   "Get the project name."
   (let ((project-name (harpoon--get-project-name)))
-    (not (or (eq project-name "") (eq project-name "-") (eq project-name nil)))))
+    (not (or (string= project-name "") (string= project-name "-") (string= project-name nil)))))
 
 (defun harpoon--get-project-name ()
   "Get the harpoon project name."
