@@ -64,9 +64,15 @@ Example of how to set the shortcuts:
 * Customizing
 You can customize by setting this variable:
 
-| Variable                   | Description                                                                   | Default     |
-| harpoon-separate-by-branch | If nil, ignores the branch                                                    | t           |
-| harpoon-project-package    | Package used to harpoon to get project stuff.  Available: projectile, project | 'projectile |
+| Variable                         | Description                                                                           | Default                          |
+| harpoon-separate-by-branch       | If nil, ignores the branch                                                            | t                                |
+| harpoon-project-package          | Package used to harpoon to get project stuff.  Available: projectile, project         | 'projectile                      |
+| harpoon-without-project-function | Function used to return a name to for harpoon cache file when not visiting a project. | 'harpoon--current-file-directory |
+
+** Extra tips for ~harpoon-without-project-function~
+If you use doom (with persp-mode), you can use ~'+workspace-current-name~ and use the workspace name instead current file directory.
+
+You can also create your own function to determine the harpoon cache file and add to this variable.
 
 * My other works:
 ** Rails i18n:

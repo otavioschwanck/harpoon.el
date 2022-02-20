@@ -43,6 +43,10 @@
   "Organize bookmarks by project and branch."
   :group 'tools)
 
+(defcustom harpoon-without-project-function 'harpoon--current-file-directory
+  "When project is not found, use this function instead."
+  :type 'string)
+
 (defcustom harpoon-cache-file (concat user-emacs-directory ".local/harpoon/")
   "Where the cache will be saved."
   :type 'string)
@@ -76,11 +80,25 @@
                                                                         (shell-command-to-string "echo $HOME") "\n")) "/")
                                                           (when (fboundp 'project-root) (project-root (project-current)))))))
 
+(defun harpoon--current-file-directory ()
+  "Return current directory path sanitized."
+  (harpoon--sanitize (file-name-directory buffer-file-name)))
+
+(defun harpoon--has-project ()
+  "Get the project name."
+  (let ((project-name (harpoon--get-project-name)))
+    (not (or (eq project-name "") (eq project-name "-") (eq project-name nil)))))
+
+(defun harpoon--get-project-name ()
+  "Get the harpoon project name."
+  (condition-case nil (cond
+   ((eq harpoon-project-package 'projectile) (when (fboundp 'projectile-project-name) (projectile-project-name)))
+   ((eq harpoon-project-package 'project) (harpoon--get-project-name-for-project)))
+    (error nil)))
+
 (defun harpoon-project-name-function ()
   "Get the project name."
-  (cond
-   ((eq harpoon-project-package 'projectile) (when (fboundp 'projectile-project-name) (projectile-project-name)))
-   ((eq harpoon-project-package 'project) (harpoon--get-project-name-for-project))))
+  (if (harpoon--has-project) (harpoon--get-project-name) (funcall harpoon-without-project-function)))
 
 (defun harpoon--get-project-name-for-project ()
   "Return projects name for project."
@@ -97,10 +115,11 @@
 
 (defun harpoon--cache-key ()
   "Key to save current file on cache."
-  (if harpoon-separate-by-branch
+  (if (harpoon--has-project) (if harpoon-separate-by-branch
       (concat (harpoon--sanitize (harpoon-project-name-function))
               "#"
               (harpoon--sanitize (harpoon--get-branch-name)))
+    (harpoon--sanitize (harpoon-project-name-function)))
     (harpoon--sanitize (harpoon-project-name-function))))
 
 (defun harpoon--create-directory ()
@@ -115,7 +134,7 @@
 
 (defun harpoon--buffer-file-name ()
   "Parse harpoon file name."
-  (s-replace-regexp (harpoon-project-root-function) "" (buffer-file-name)))
+  (if (harpoon--has-project) (s-replace-regexp (harpoon-project-root-function) "" (buffer-file-name)) (buffer-file-name)))
 
 (defun harpoon--sanitize (string)
   "Sanitize word to save file.  STRING: String to sanitize."
@@ -212,7 +231,7 @@
   (interactive)
   (unless (eq major-mode 'harpoon-mode)
     (harpoon--create-directory)
-    (setq harpoon--current-project-path (harpoon-project-root-function))
+    (setq harpoon--current-project-path (when (harpoon--has-project) (harpoon-project-root-function)))
     (find-file (harpoon--file-name) '(:dedicated t))
     (harpoon-mode)))
 
@@ -220,11 +239,18 @@
 (defun harpoon-toggle-quick-menu ()
   "Open quickmenu."
   (interactive)
-  (let ((result (completing-read "Harpoon to file: "
-                                 (delete (s-replace-regexp (harpoon-project-root-function) "" (or (buffer-file-name) ""))
-                                         (delete "" (split-string (harpoon--get-file-text) "\n"))))))
+  (let ((result (harpoon--fix-quick-menu-items)))
     (when (and result (not (string-equal result "")))
-      (find-file (concat (harpoon-project-root-function) result)))))
+      (find-file (if (harpoon--has-project) (concat (harpoon-project-root-function) result) result)))))
+
+(defun harpoon--fix-quick-menu-items ()
+  "Fix harpoon quick menu items."
+  (if (harpoon--has-project)
+      (completing-read "Harpoon to file: "
+                       (delete (s-replace-regexp (harpoon-project-root-function) "" (or (buffer-file-name) ""))
+                               (delete "" (split-string (harpoon--get-file-text) "\n"))))
+
+    (completing-read "Harpoon to file: " (delete "" (split-string (harpoon--get-file-text) "\n")))))
 
 (define-derived-mode harpoon-mode nil "Harpoon"
   "Mode for harpoon."
@@ -240,7 +266,7 @@
   (if (eq major-mode 'harpoon-mode)
       (progn (f-write "" 'utf-8 (file-truename (buffer-file-name)))
              (kill-buffer))
-      (f-write "" 'utf-8 (harpoon--file-name)))
+    (f-write "" 'utf-8 (harpoon--file-name)))
   (message "Harpoon cleaned."))
 
 ;;;###autoload
