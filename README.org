@@ -64,13 +64,15 @@ Example of how to set the shortcuts:
 * Customizing
 You can customize by setting this variable:
 
-| Variable                         | Description                                                                           | Default                          |
-| harpoon-separate-by-branch       | If nil, ignores the branch                                                            | t                                |
-| harpoon-project-package          | Package used to harpoon to get project stuff.  Available: projectile, project         | 'projectile                      |
-| harpoon-without-project-function | Function used to return a name for harpoon cache file when not visiting a project. | 'harpoon--current-file-directory |
+| Variable                         | Description                                                                        | Default                |
+| harpoon-separate-by-branch       | If nil, ignores the branch                                                         | t                      |
+| harpoon-project-package          | Package used to harpoon to get project stuff.  Available: projectile, project      | 'projectile            |
+| harpoon-without-project-function | Function used to return a name for harpoon cache file when not visiting a project. | 'harpoon--package-name |
 
 ** Extra tips for ~harpoon-without-project-function~
-If you use doom (with persp-mode), you can use '+workspace-current-name and use the workspace name instead current file directory.
+If you want that harpoon behaves uses the current file directory, change it to 'harpoon--current-file-directory
+
+If you use doom , you can set this variable to '+workspace-current-name and use the workspace name instead the harpoon global.
 
 You can also create your own function to determine the harpoon cache file and add to this variable.
 

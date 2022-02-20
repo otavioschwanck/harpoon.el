@@ -225,6 +225,10 @@
   (if (file-exists-p (harpoon--file-name))
       (f-read (harpoon--file-name) 'utf-8) ""))
 
+(defun harpoon--package-name ()
+  "Return harpoon package name."
+  "harpoon")
+
 ;;;###autoload
 (defun harpoon-toggle-file ()
   "Open harpoon file."
