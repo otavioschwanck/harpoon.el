@@ -245,16 +245,23 @@
   (interactive)
   (let ((result (harpoon--fix-quick-menu-items)))
     (when (and result (not (string-equal result "")))
-      (find-file (if (harpoon--has-project) (concat (harpoon-project-root-function) result) result)))))
+      (find-file (if (harpoon--has-project) (concat (harpoon-project-root-function) (harpoon--remove-number result))
+                   (harpoon--remove-number result))))))
+
+(defun harpoon--remove-number (file)
+  "Remove number of the file."
+  (nth 1 (split-string file " - ")))
 
 (defun harpoon--fix-quick-menu-items ()
   "Fix harpoon quick menu items."
   (if (harpoon--has-project)
-      (completing-read "Harpoon to file: "
-                       (delete (s-replace-regexp (harpoon-project-root-function) "" (or (buffer-file-name) ""))
-                               (delete "" (split-string (harpoon--get-file-text) "\n"))))
+      (completing-read "Harpoon to file: " (harpoon--add-numbers-to-quick-menu (delete "" (split-string (harpoon--get-file-text) "\n"))))
+    (completing-read "Harpoon to file: " (harpoon--add-numbers-to-quick-menu (delete "" (split-string (harpoon--get-file-text) "\n"))))))
 
-    (completing-read "Harpoon to file: " (delete "" (split-string (harpoon--get-file-text) "\n")))))
+(defun harpoon--add-numbers-to-quick-menu (files)
+  "Add numbers to files."
+  (let ((line-number 0))
+    (mapcar (lambda (line) (setq line-number (+ 1 line-number)) (concat (format "%s" line-number) " - " line)) files)))
 
 (define-derived-mode harpoon-mode nil "Harpoon"
   "Mode for harpoon."
