@@ -6,6 +6,7 @@ This plugin offers quick bookmarks separated by project and branch.  You can qui
 Harpoon persists between emacs sessions.
 
 [[file:demo.gif]]
+[[file:hydra.png]]
 
 * Installation
 ** Manual

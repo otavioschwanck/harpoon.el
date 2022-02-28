@@ -152,7 +152,7 @@
                                        (format "head -n %s < %s | tail -n 1"
                                                line-number
                                                (if (eq major-mode 'harpoon-mode) (file-truename (buffer-file-name)) (harpoon--file-name))))))
-         (full-file-name (if (harpoon--has-project) (concat (or harpoon--project-path (harpoon-project-root-function)) file-name) file-name)))
+         (full-file-name (if (and (fboundp 'project-root) (harpoon--has-project)) (concat (or harpoon--project-path (harpoon-project-root-function)) file-name) file-name)))
     (if (file-exists-p full-file-name)
         (find-file full-file-name)
       (message "File not found."))))
@@ -231,7 +231,18 @@
   (require 'hydra)
   (let ((candidates (harpoon--hydra-candidates)))
     (eval `(defhydra harpoon-hydra (:exit t :column 1)
-             "Harpoon to"
+"
+          ||                          ||
+          ||  ╭╮ ╭╮                   ||
+          ||  ┃┃ ┃┃                   ||
+          ||  ┃╰━╯┣━━┳━┳━━┳━━┳━━┳━╮   ||
+          ||  ┃╭━╮┃╭╮┃╭┫╭╮┃╭╮┃╭╮┃╭╮╮  ||
+          ||  ┃┃ ┃┃╭╮┃┃┃╰╯┃╰╯┃╰╯┃┃┃┃  ||
+          ||  ╰╯ ╰┻╯╰┻╯┃╭━┻━━┻━━┻╯╰╯  ||
+          ||           ┃┃             ||
+          ||           ╰╯             ||
+          ||                          ||
+"
              ,@candidates
              ("SPC" harpoon-toggle-quick-menu "Open Menu" :column "Other Actions")
              ("f" harpoon-toggle-file "Open Harpoon File" :column "Other Actions")
@@ -248,25 +259,26 @@
               (setq line-number (+ 1 line-number))
               (list (format "%s" line-number)
                     (intern (concat "harpoon-go-to-" (format "%s" line-number)))
-                    (harpoon--format-item-name item full-candidates)
-                    :column (if (< line-number 6) "First Half" "Second Half")))
+                    (harpoon--format-item-name item)
+                    :column (if (< line-number 6) "1-5" "6-9")))
             full-candidates)))
 
-(defun harpoon--format-item-name (item full-candidates)
+(defun harpoon--format-item-name (item)
   "Format item on harpoon. ITEM = Item to be formated.
 FULL-CANDIDATES:  Candidates to be edited."
   (if (string-match-p "/" item)
       (let ((splitted-item (split-string item "/")))
-        (harpoon--already-includes-text item splitted-item full-candidates)) item))
+        (harpoon--already-includes-text item splitted-item)) item))
 
-(defun harpoon--already-includes-text (item splitted-item full-candidates)
+(defun harpoon--already-includes-text (item splitted-item)
   "Return the name to be used on hydra.
 ITEM = Full item.  SPLITTED-ITEM = Item splitted.
 FULL-CANDIDATES = All candidates to look."
-  (let ((file-base-name (nth (- (length splitted-item) 1) splitted-item)))
+  (let ((file-base-name (nth (- (length splitted-item) 1) splitted-item))
+        (candidates (seq-take (delete "" (split-string (harpoon--get-file-text) "\n")) 9)))
     (if (member file-base-name (mapcar (lambda (x)
                                          (nth (- (length (split-string x "/")) 1) (split-string x "/")))
-                                       (delete item full-candidates)))
+                                       (delete item candidates)))
         (concat file-base-name " at " (string-join (butlast splitted-item) "/"))
       file-base-name)))
 
