@@ -33,7 +33,7 @@ Example of how to set the shortcuts:
 #+begin_src emacs-lisp
 ;; On vanilla (You can use another prefix instead C-c h)
 
-;; You can use this hydra menu that have anything
+;; You can use this hydra menu that have all the commands
 (global-set-key (kbd "C-c a") 'harpoon-quick-menu-hydra)
 (global-set-key (kbd "C-c h <return>") 'harpoon-add-file)
 
@@ -53,7 +53,7 @@ Example of how to set the shortcuts:
 
 ;; On doom emacs
 
-;; You can use this hydra menu that have anything
+;; You can use this hydra menu that have all the commands
 (map! :n "C-SPC" 'harpoon-quick-menu-hydra)
 (map! :n "C-s" 'harpoon-add-file)
 
