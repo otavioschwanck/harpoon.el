@@ -249,7 +249,7 @@
                    (harpoon--remove-number result))))))
 
 (defun harpoon--remove-number (file)
-  "Remove number of the file."
+  "Remove number of the file. FILE = Filename to remove the number."
   (nth 1 (split-string file " - ")))
 
 (defun harpoon--fix-quick-menu-items ()
@@ -259,7 +259,7 @@
     (completing-read "Harpoon to file: " (harpoon--add-numbers-to-quick-menu (delete "" (split-string (harpoon--get-file-text) "\n"))))))
 
 (defun harpoon--add-numbers-to-quick-menu (files)
-  "Add numbers to files."
+  "Add numbers to files.  FILES = Files to add the numbers."
   (let ((line-number 0))
     (mapcar (lambda (line) (setq line-number (+ 1 line-number)) (concat (format "%s" line-number) " - " line)) files)))
 
