@@ -152,8 +152,7 @@
                                        (format "head -n %s < %s | tail -n 1"
                                                line-number
                                                (if (eq major-mode 'harpoon-mode) (file-truename (buffer-file-name)) (harpoon--file-name))))))
-         (full-file-name (concat (or harpoon--project-path (harpoon-project-root-function)) file-name)))
-    (message full-file-name)
+         (full-file-name (if (harpoon--has-project) (concat (or harpoon--project-path (harpoon-project-root-function)) file-name) file-name)))
     (if (file-exists-p full-file-name)
         (find-file full-file-name)
       (message "File not found."))))
