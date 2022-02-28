@@ -5,8 +5,8 @@
 ;; Author: Otávio Schwanck <otavioschwanck@gmail.com>
 ;; Keywords: tools languages
 ;; Homepage: https://github.com/otavioschwanck/harpoon.el
-;; Version: 0.3
-;; Package-Requires: ((emacs "27.2") (f "0.20.0"))
+;; Version: 0.4
+;; Package-Requires: ((emacs "27.2") (f "0.20.0") (hydra "0.14.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -28,8 +28,13 @@
 ;; You can easily add, reorder and delete bookmarks.  The bookmarks are
 ;; separated by project and branch.
 
+;;; Changelog
+;;; 0.4
+;;; Added hydra support
+
 ;;; Code:
 (require 'f)
+(require 'subr-x)
 
 (defun harpoon--default-project-package ()
   "Return the default project package."
@@ -220,6 +225,52 @@
         (f-write-text (concat harpoon-current-file-text (harpoon--buffer-file-name) "\n") 'utf-8 (harpoon--file-name))
         (message "File added to harpoon.")))))
 
+;;;###autoload
+(defun harpoon-quick-menu-hydra ()
+  "Open harpoon quick menu with hydra."
+  (interactive)
+  (require 'hydra)
+  (let ((candidates (harpoon--hydra-candidates)))
+    (eval `(defhydra harpoon-hydra (:exit t :column 1)
+             "Harpoon to"
+             ,@candidates
+             ("SPC" harpoon-toggle-quick-menu "Open Menu" :column "Other Actions")
+             ("f" harpoon-toggle-file "Open Harpoon File" :column "Other Actions")
+             ("c" harpoon-clear "Clear Harpoon" :column "Other Actions")
+             ("s" harpoon-add-file "Save Current File to Harpoon" :column "Other Actions"))))
+
+  (when (fboundp 'harpoon-hydra/body) (harpoon-hydra/body)))
+
+(defun harpoon--hydra-candidates ()
+  "Candidates for hydra."
+  (let ((line-number 0)
+        (full-candidates (seq-take (delete "" (split-string (harpoon--get-file-text) "\n")) 9)))
+    (mapcar (lambda (item)
+              (setq line-number (+ 1 line-number))
+              (list (format "%s" line-number)
+                    (intern (concat "harpoon-go-to-" (format "%s" line-number)))
+                    (harpoon--format-item-name item full-candidates)
+                    :column (if (< line-number 6) "First Half" "Second Half")))
+            full-candidates)))
+
+(defun harpoon--format-item-name (item full-candidates)
+  "Format item on harpoon. ITEM = Item to be formated.
+FULL-CANDIDATES:  Candidates to be edited."
+  (if (string-match-p "/" item)
+      (let ((splitted-item (split-string item "/")))
+        (harpoon--already-includes-text item splitted-item full-candidates)) item))
+
+(defun harpoon--already-includes-text (item splitted-item full-candidates)
+  "Return the name to be used on hydra.
+ITEM = Full item.  SPLITTED-ITEM = Item splitted.
+FULL-CANDIDATES = All candidates to look."
+  (let ((file-base-name (nth (- (length splitted-item) 1) splitted-item)))
+    (if (member file-base-name (mapcar (lambda (x)
+                                         (nth (- (length (split-string x "/")) 1) (split-string x "/")))
+                                       (delete item full-candidates)))
+        (concat file-base-name " at " (string-join (butlast splitted-item) "/"))
+      file-base-name)))
+
 (defun harpoon--get-file-text ()
   "Get text inside harpoon file."
   (if (file-exists-p (harpoon--file-name))
@@ -274,11 +325,12 @@
 (defun harpoon-clear ()
   "Clear harpoon files."
   (interactive)
-  (if (eq major-mode 'harpoon-mode)
-      (progn (f-write "" 'utf-8 (file-truename (buffer-file-name)))
-             (kill-buffer))
-    (f-write "" 'utf-8 (harpoon--file-name)))
-  (message "Harpoon cleaned."))
+  (when (yes-or-no-p "Do you really want to clear harpoon file? ")
+    (if (eq major-mode 'harpoon-mode)
+        (progn (f-write "" 'utf-8 (file-truename (buffer-file-name)))
+               (kill-buffer))
+      (f-write "" 'utf-8 (harpoon--file-name)))
+    (message "Harpoon cleaned.")))
 
 ;;;###autoload
 (defun harpoon-find-file ()

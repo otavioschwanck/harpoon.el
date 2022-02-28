@@ -31,8 +31,13 @@ Example of how to set the shortcuts:
 
 #+begin_src emacs-lisp
 ;; On vanilla (You can use another prefix instead C-c h)
-(global-set-key (kbd "C-c h f") 'harpoon-toggle-file)
+
+;; You can use this hydra menu that have anything
+(global-set-key (kbd "C-c a") 'harpoon-quick-menu-hydra)
 (global-set-key (kbd "C-c h <return>") 'harpoon-add-file)
+
+;; And the vanilla commands
+(global-set-key (kbd "C-c h f") 'harpoon-toggle-file)
 (global-set-key (kbd "C-c h h") 'harpoon-toggle-quick-menu)
 (global-set-key (kbd "C-c h c") 'harpoon-clear)
 (global-set-key (kbd "C-c h 1") 'harpoon-go-to-1)
@@ -46,10 +51,14 @@ Example of how to set the shortcuts:
 (global-set-key (kbd "C-c h 9") 'harpoon-go-to-9)
 
 ;; On doom emacs
+
+;; You can use this hydra menu that have anything
+(map! :n "C-SPC" 'harpoon-quick-menu-hydra)
+(map! :n "C-s" 'harpoon-add-file)
+
+;; And the vanilla commands
 (map! :leader "j c" 'harpoon-clear)
 (map! :leader "j f" 'harpoon-toggle-file)
-(map! :n "C-s" 'harpoon-add-file)
-(map! :n "C-SPC" 'harpoon-toggle-quick-menu)
 (map! :leader "1" 'harpoon-go-to-1)
 (map! :leader "2" 'harpoon-go-to-2)
 (map! :leader "3" 'harpoon-go-to-3)
