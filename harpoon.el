@@ -157,6 +157,61 @@
         (find-file full-file-name)
       (message "File not found."))))
 
+(defun harpoon--delete (line-number)
+  "Delete an item on harpoon. LINE-NUMBER: Line of item to delete."
+  (harpoon-toggle-file)
+  (goto-char (point-min)) (forward-line (- line-number 1))
+  (kill-whole-line)
+  (save-buffer)
+  (kill-buffer)
+  (harpoon-delete-item))
+
+
+(defun harpoon-delete-1 ()
+  "Delete item harpoon on position 1."
+  (interactive)
+  (harpoon--delete 1))
+
+(defun harpoon-delete-2 ()
+  "Delete item harpoon on position 1."
+  (interactive)
+  (harpoon--delete 2))
+
+(defun harpoon-delete-3 ()
+  "Delete item harpoon on position 1."
+  (interactive)
+  (harpoon--delete 3))
+
+(defun harpoon-delete-4 ()
+  "Delete item harpoon on position 1."
+  (interactive)
+  (harpoon--delete 4))
+
+(defun harpoon-delete-5 ()
+  "Delete item harpoon on position 1."
+  (interactive)
+  (harpoon--delete 5))
+
+(defun harpoon-delete-6 ()
+  "Delete item harpoon on position 1."
+  (interactive)
+  (harpoon--delete 6))
+
+(defun harpoon-delete-7 ()
+  "Delete item harpoon on position 1."
+  (interactive)
+  (harpoon--delete 7))
+
+(defun harpoon-delete-8 ()
+  "Delete item harpoon on position 1."
+  (interactive)
+  (harpoon--delete 8))
+
+(defun harpoon-delete-9 ()
+  "Delete item harpoon on position 1."
+  (interactive)
+  (harpoon--delete 9))
+
 ;;;###autoload
 (defun harpoon-go-to-1 ()
   "Go to file 1 on harpoon."
@@ -229,7 +284,7 @@
   "Open harpoon quick menu with hydra."
   (interactive)
   (require 'hydra)
-  (let ((candidates (harpoon--hydra-candidates)))
+  (let ((candidates (harpoon--hydra-candidates "harpoon-go-to-")))
     (eval `(defhydra harpoon-hydra (:exit t :column 1)
 "
           ||                          ||
@@ -245,20 +300,22 @@
 "
              ,@candidates
              ("SPC" harpoon-toggle-quick-menu "Open Menu" :column "Other Actions")
+             ("d" harpoon-delete-item "Delete some harpoon" :column "Other Actions")
              ("f" harpoon-toggle-file "Open Harpoon File" :column "Other Actions")
              ("c" harpoon-clear "Clear Harpoon" :column "Other Actions")
              ("s" harpoon-add-file "Save Current File to Harpoon" :column "Other Actions"))))
 
   (when (fboundp 'harpoon-hydra/body) (harpoon-hydra/body)))
 
-(defun harpoon--hydra-candidates ()
-  "Candidates for hydra."
+
+(defun harpoon--hydra-candidates (method)
+  "Candidates for hydra. METHOD = Method to execute on harpoon item."
   (let ((line-number 0)
         (full-candidates (seq-take (delete "" (split-string (harpoon--get-file-text) "\n")) 9)))
     (mapcar (lambda (item)
               (setq line-number (+ 1 line-number))
               (list (format "%s" line-number)
-                    (intern (concat "harpoon-go-to-" (format "%s" line-number)))
+                    (intern (concat method (format "%s" line-number)))
                     (harpoon--format-item-name item)
                     :column (if (< line-number 6) "1-5" "6-9")))
             full-candidates)))
@@ -281,6 +338,31 @@ FULL-CANDIDATES = All candidates to look."
                                        (delete item candidates)))
         (concat file-base-name " at " (string-join (butlast splitted-item) "/"))
       file-base-name)))
+
+
+;;;###autoload
+(defun harpoon-delete-item ()
+  "Delete items on harpoon."
+  (interactive)
+  (let ((candidates (harpoon--hydra-candidates "harpoon-delete-")))
+    (eval `(defhydra harpoon-delete-hydra (:exit t :column 1 :color red)
+             "
+
+   /0000000\\
+   | 00000 |
+   | | | | |
+   | TRASH |
+   | | | | |
+   \\-------/
+
+Select items to delete:
+"
+             ,@candidates
+             ("SPC" harpoon-quick-menu-hydra "Back to harpoon" :column "Other Actions")
+             ("q" hydra-keyboard-quit "Quit" :column "Other Actions"))))
+
+  (when (fboundp 'harpoon-delete-hydra/body) (harpoon-delete-hydra/body)))
+
 
 (defun harpoon--get-file-text ()
   "Get text inside harpoon file."
