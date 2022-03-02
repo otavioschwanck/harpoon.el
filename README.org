@@ -1,7 +1,7 @@
 * About
-Harpoon plugin for emacs, based on the plugin from [[https://github.com/ThePrimeagen/harpoon][ThePrimeagen]].
+Harpoon package for emacs, based on the plugin from [[https://github.com/ThePrimeagen/harpoon][ThePrimeagen]].
 
-This plugin offers quick bookmarks separated by project and branch.  You can quick navigate between your working files and forget about that files opened that you will not use anymore.
+This package offers quick bookmarks separated by project and branch.  You can quick navigate between your working files and forget about that files opened that you will not use anymore.
 
 Harpoon is more a way to manage and quick navigate between the main files that you are working on than a bookmark system.
 
