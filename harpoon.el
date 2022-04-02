@@ -5,8 +5,8 @@
 ;; Author: Otávio Schwanck <otavioschwanck@gmail.com>
 ;; Keywords: tools languages
 ;; Homepage: https://github.com/otavioschwanck/harpoon.el
-;; Version: 0.4
-;; Package-Requires: ((emacs "27.2") (f "0.20.0") (hydra "0.14.0"))
+;; Version: 0.5
+;; Package-Requires: ((emacs "27.2") (f "0.20.0") (hydra "0.14.0") (project "0.8.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -29,6 +29,9 @@
 ;; separated by project and branch.
 
 ;;; Changelog
+;;; 0.5
+;;; Fix when project is not loaded
+;;;
 ;;; 0.4
 ;;; Added hydra support
 
@@ -80,10 +83,10 @@
   "Get the project root."
   (cond
    ((eq harpoon-project-package 'projectile) (when (fboundp 'projectile-project-root) (projectile-project-root)))
-   ((eq harpoon-project-package 'project) (string-replace "~/"
-                                                          (concat (car (split-string
-                                                                        (shell-command-to-string "echo $HOME") "\n")) "/")
-                                                          (when (fboundp 'project-root) (project-root (project-current)))))))
+   ((eq harpoon-project-package 'project) (replace-regexp-in-string "~/"
+                                                                    (concat (car (split-string
+                                                                                  (shell-command-to-string "echo $HOME") "\n")) "/")
+                                                                    (when (fboundp 'project-root) (project-root (project-current)))))))
 
 (defun harpoon--current-file-directory ()
   "Return current directory path sanitized."
@@ -148,6 +151,7 @@
 ;;;###autoload
 (defun harpoon-go-to (line-number)
   "Go to specific file on harpoon (by line order). LINE-NUMBER: Line to go."
+  (require 'project)
   (let* ((file-name (s-replace-regexp "\n" ""
                                       (shell-command-to-string
                                        (format "head -n %s < %s | tail -n 1"
@@ -156,7 +160,7 @@
          (full-file-name (if (and (fboundp 'project-root) (harpoon--has-project)) (concat (or harpoon--project-path (harpoon-project-root-function)) file-name) file-name)))
     (if (file-exists-p full-file-name)
         (find-file full-file-name)
-      (message "File not found."))))
+      (message (concat full-file-name " not found.")))))
 
 (defun harpoon--delete (line-number)
   "Delete an item on harpoon. LINE-NUMBER: Line of item to delete."
@@ -297,17 +301,14 @@
   (let ((candidates (harpoon--hydra-candidates "harpoon-go-to-")))
     (eval `(defhydra harpoon-hydra (:exit t :column 1)
 "
-          ||                          ||
-          ||  ╭╮ ╭╮                   ||
-          ||  ┃┃ ┃┃                   ||
-          ||  ┃╰━╯┣━━┳━┳━━┳━━┳━━┳━╮   ||
-          ||  ┃╭━╮┃╭╮┃╭┫╭╮┃╭╮┃╭╮┃╭╮╮  ||
-          ||  ┃┃ ┃┃╭╮┃┃┃╰╯┃╰╯┃╰╯┃┃┃┃  ||
-          ||  ╰╯ ╰┻╯╰┻╯┃╭━┻━━┻━━┻╯╰╯  ||
-          ||           ┃┃             ||
-          ||           ╰╯             ||
-          ||                          ||
-"
+
+        ██╗  ██╗ █████╗ ██████╗ ██████╗  ██████╗  ██████╗ ███╗   ██╗
+        ██║  ██║██╔══██╗██╔══██╗██╔══██╗██╔═══██╗██╔═══██╗████╗  ██║
+        ███████║███████║██████╔╝██████╔╝██║   ██║██║   ██║██╔██╗ ██║
+        ██╔══██║██╔══██║██╔══██╗██╔═══╝ ██║   ██║██║   ██║██║╚██╗██║
+        ██║  ██║██║  ██║██║  ██║██║     ╚██████╔╝╚██████╔╝██║ ╚████║
+        ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝      ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝
+                                                            "
              ,@candidates
              ("SPC" harpoon-toggle-quick-menu "Open Menu" :column "Other Actions")
              ("d" harpoon-delete-item "Delete some harpoon" :column "Other Actions")
