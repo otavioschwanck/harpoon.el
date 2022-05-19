@@ -136,6 +136,7 @@
     (make-directory harpoon-cache-file)))
 
 
+;;;###autoload
 (defun harpoon--file-name ()
   "File name for harpoon on current project."
   (concat harpoon-cache-file (harpoon--cache-key)))
