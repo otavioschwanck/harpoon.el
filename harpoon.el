@@ -133,7 +133,7 @@
 (defun harpoon--create-directory ()
   "Create harpoon cache dir if doesn't exist."
   (unless (f-directory? harpoon-cache-file)
-    (make-directory harpoon-cache-file)))
+    (make-directory harpoon-cache-file t)))
 
 (defun harpoon--file-name ()
   "File name for harpoon on current project."
