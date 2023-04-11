@@ -107,7 +107,7 @@
 
 (defun harpoon--get-project-name-for-project ()
   "Return projects name for project."
-  (let* ((splitted-project-path (split-string (car (last (project-current))) "/"))
+  (let* ((splitted-project-path (split-string (project-root (project-current)) "/"))
          (splitted-length (length splitted-project-path))
          (project-name (nth (- splitted-length 2) splitted-project-path)))
     project-name))
