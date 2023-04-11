@@ -83,10 +83,7 @@
   "Get the project root."
   (cond
    ((eq harpoon-project-package 'projectile) (when (fboundp 'projectile-project-root) (projectile-project-root)))
-   ((eq harpoon-project-package 'project) (replace-regexp-in-string "~/"
-                                                                    (concat (car (split-string
-                                                                                  (shell-command-to-string "echo $HOME") "\n")) "/")
-                                                                    (when (fboundp 'project-root) (project-root (project-current)))))))
+   ((eq harpoon-project-package 'project) (expand-file-name (when (fboundp 'project-root) (project-root (project-current)))))))
 
 (defun harpoon--current-file-directory ()
   "Return current directory path sanitized."
