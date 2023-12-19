@@ -83,10 +83,7 @@
   "Get the project root."
   (cond
    ((eq harpoon-project-package 'projectile) (when (fboundp 'projectile-project-root) (projectile-project-root)))
-   ((eq harpoon-project-package 'project) (replace-regexp-in-string "~/"
-                                                                    (concat (car (split-string
-                                                                                  (shell-command-to-string "echo $HOME") "\n")) "/")
-                                                                    (when (fboundp 'project-root) (project-root (project-current)))))))
+   ((eq harpoon-project-package 'project) (expand-file-name (when (fboundp 'project-root) (project-root (project-current)))))))
 
 (defun harpoon--current-file-directory ()
   "Return current directory path sanitized."
@@ -110,7 +107,7 @@
 
 (defun harpoon--get-project-name-for-project ()
   "Return projects name for project."
-  (let* ((splitted-project-path (split-string (car (last (project-current))) "/"))
+  (let* ((splitted-project-path (split-string (project-root (project-current)) "/"))
          (splitted-length (length splitted-project-path))
          (project-name (nth (- splitted-length 2) splitted-project-path)))
     project-name))
