@@ -282,6 +282,26 @@
   (harpoon-go-to 9))
 
 ;;;###autoload
+(defun harpoon-go-to-next ()
+  "Go to the next file in harpoon."
+  (interactive)
+  (let* ((files (delete "" (split-string (harpoon--get-file-text) "\n")))
+         (current-file (harpoon--buffer-file-name))
+         (current-index (or (cl-position current-file files :test 'string=) -1))
+         (next-index (mod (+ current-index 1) (length files))))
+    (harpoon-go-to (1+ next-index))))
+
+;;;###autoload
+(defun harpoon-go-to-prev ()
+  "Go to the previous file in harpoon."
+  (interactive)
+  (let* ((files (delete "" (split-string (harpoon--get-file-text) "\n")))
+         (current-file (harpoon--buffer-file-name))
+         (current-index (or (cl-position current-file files :test 'string=) -1))
+         (prev-index (mod (+ current-index (length files) -1) (length files))))
+    (harpoon-go-to (1+ prev-index))))
+
+;;;###autoload
 (defun harpoon-add-file ()
   "Add current file to harpoon."
   (interactive)
