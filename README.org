@@ -25,6 +25,7 @@ Add to package.el:
 - Add, order and delete harpoons in your code.
 - Harpoon is separated by project and branch
 - Quick switch between harpoons
+- Jump between last and previous entries
 
 * Configuring
 Example of how to set the shortcuts:
