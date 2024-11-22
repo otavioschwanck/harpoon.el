@@ -149,19 +149,27 @@
   "Go to specific file on harpoon (by line order). LINE-NUMBER: Line to go."
   (require 'project)
 
-  (let* ((file-name (s-replace-regexp "\n" ""
+  (let* ((harpoon-mode-p (eq major-mode 'harpoon-mode))
+         (harpoon-file (if harpoon-mode-p
+                           (file-truename (buffer-file-name))
+                         (harpoon--file-name)))
+         (file-name (s-replace-regexp "\n" ""
                                       (with-temp-buffer
-                                        (insert-file-contents-literally
-                                         (if (eq major-mode 'harpoon-mode)
-                                             (file-truename (buffer-file-name))
-                                           (harpoon--file-name)))
+                                        (insert-file-contents-literally harpoon-file)
                                         (goto-char (point-min))
                                         (forward-line (- line-number 1))
-                                        (buffer-substring-no-properties (line-beginning-position) (line-end-position)))))
-         (full-file-name (if (and (fboundp 'project-root) (harpoon--has-project)) (concat (or harpoon--project-path (harpoon-project-root-function)) file-name) file-name)))
-    (if (file-exists-p full-file-name)
-        (find-file full-file-name)
-      (message (concat full-file-name " not found.")))))
+                                        (buffer-substring-no-properties (line-beginning-position)
+                                                                        (line-end-position)))))
+         (full-file-name (if (and (fboundp 'project-root) (harpoon--has-project))
+                             (concat (or harpoon--project-path
+                                         (harpoon-project-root-function))
+                                     file-name)
+                           file-name)))
+    (if harpoon-mode-p
+        (harpoon-find-file file-name)
+      (if (file-exists-p full-file-name)
+          (find-file full-file-name)
+        (message (concat full-file-name " not found."))))))
 
 (defun harpoon--delete (line-number)
   "Delete an item on harpoon. LINE-NUMBER: Line of item to delete."
@@ -458,16 +466,17 @@ Select items to delete:
     (message "Harpoon cleaned.")))
 
 ;;;###autoload
-(defun harpoon-find-file ()
+(defun harpoon-find-file (&optional file-name)
   "Visit file on `harpoon-mode'."
   (interactive)
-  (let* ((line (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
-         (path (concat harpoon--project-path line)))
-    (if (file-exists-p path)
+  (let* ((file-name (or file-name
+                        (buffer-substring-no-properties (point-at-bol) (point-at-eol))))
+         (full-file-name (concat harpoon--project-path file-name)))
+    (if (file-exists-p full-file-name)
         (progn (save-buffer)
                (kill-buffer)
-               (find-file path))
-      (message "File not found."))))
+               (find-file full-file-name))
+      (message "File %s not found." full-file-name))))
 
 (provide 'harpoon)
 ;;; harpoon.el ends here
